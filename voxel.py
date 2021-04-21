@@ -45,12 +45,6 @@ upDownEvent = OnscreenText(text="3: Toggle Light from on top On/Off",
                            parent=base.a2dTopLeft)
 
 
-# You can't normalize inline so this is a helper function
-def normalized(*args):
-    myVec = LVector3(*args)
-    myVec.normalize()
-    return myVec
-
 # helper function to make a square given the Lower-Left-Hand and
 # Upper-Right-Hand corners
 
@@ -70,10 +64,10 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
         vertex.addData3(x2, y2, z2)
         vertex.addData3(x1, y2, z2)
 
-        normal.addData3(normalized(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1))
-        normal.addData3(normalized(2 * x2 - 1, 2 * y1 - 1, 2 * z1 - 1))
-        normal.addData3(normalized(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1))
-        normal.addData3(normalized(2 * x1 - 1, 2 * y2 - 1, 2 * z2 - 1))
+        normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
+        normal.addData3(LVector3(2 * x2 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
+        normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
+        normal.addData3(LVector3(2 * x1 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
 
     else:
         vertex.addData3(x1, y1, z1)
@@ -81,10 +75,10 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
         vertex.addData3(x2, y2, z2)
         vertex.addData3(x1, y1, z2)
 
-        normal.addData3(normalized(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1))
-        normal.addData3(normalized(2 * x2 - 1, 2 * y2 - 1, 2 * z1 - 1))
-        normal.addData3(normalized(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1))
-        normal.addData3(normalized(2 * x1 - 1, 2 * y1 - 1, 2 * z2 - 1))
+        normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
+        normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z1 - 1).normalize())
+        normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
+        normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z2 - 1).normalize())
 
     # adding different colors to the vertex for visibility
     color.addData4f(1.0, 0.0, 0.0, 1.0)
