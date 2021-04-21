@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-# Author: Kwasi Mensah (kmensah@andrew.cmu.edu)
-# Date: 8/02/2005
-#
-# This is meant to be a simple example of how to draw a cube
-# using Panda's new Geom Interface. Quads arent directly supported
-# since they get broken down to trianlges anyway.
-#
+# Author: Collin Bell
+# Date: 2021-04-21
+
+# Derived from example by:
+#    Kwasi Mensah (kmensah@andrew.cmu.edu)
+#    copyright 2005-08-02
+#    forked by Collin Bell on 2021-04-21
 
 from direct.showbase.ShowBase import ShowBase
 from direct.showbase.DirectObject import DirectObject
@@ -24,25 +24,28 @@ from panda3d.core import LVector3
 import sys
 import os
 
+
 base = ShowBase()
 base.disableMouse()
 base.camera.setPos(0, -10, 0)
 
-title = OnscreenText(text="Panda3D: Tutorial - Making a Cube Procedurally",
+
+title = OnscreenText(text="Chrysalis OS",
                      style=1, fg=(1, 1, 1, 1), pos=(-0.1, 0.1), scale=.07,
                      parent=base.a2dBottomRight, align=TextNode.ARight)
-escapeEvent = OnscreenText(text="1: Set a Texture onto the Cube",
+escapeEvent = OnscreenText(text="1): Load REaLSpaCE tm",
                            style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.08),
                            align=TextNode.ALeft, scale=.05,
                            parent=base.a2dTopLeft)
-spaceEvent = OnscreenText(text="2: Toggle Light from the front On/Off",
+spaceEvent = OnscreenText(text="2): Load ChrysalisSpace",
                           style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.14),
                           align=TextNode.ALeft, scale=.05,
                           parent=base.a2dTopLeft)
-upDownEvent = OnscreenText(text="3: Toggle Light from on top On/Off",
+upDownEvent = OnscreenText(text="3): LoadToggleSpace",
                            style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.20),
                            align=TextNode.ALeft, scale=.05,
                            parent=base.a2dTopLeft)
+
 
 
 # helper function to make a square given the Lower-Left-Hand and
@@ -61,30 +64,35 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
     if x1 != x2:
         vertex.addData3(x1, y1, z1)
         vertex.addData3(x2, y1, z1)
-        vertex.addData3(x2, y2, z2)
-        vertex.addData3(x1, y2, z2)
 
         normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
         normal.addData3(LVector3(2 * x2 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
         normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
         normal.addData3(LVector3(2 * x1 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
 
+        vertex.addData3(x2, y2, z2)
+        vertex.addData3(x1, y2, z2)
+
+
     else:
         vertex.addData3(x1, y1, z1)
         vertex.addData3(x2, y2, z1)
-        vertex.addData3(x2, y2, z2)
-        vertex.addData3(x1, y1, z2)
 
         normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z1 - 1).normalize())
         normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z1 - 1).normalize())
         normal.addData3(LVector3(2 * x2 - 1, 2 * y2 - 1, 2 * z2 - 1).normalize())
         normal.addData3(LVector3(2 * x1 - 1, 2 * y1 - 1, 2 * z2 - 1).normalize())
 
-    # adding different colors to the vertex for visibility
-    color.addData4f(1.0, 0.0, 0.0, 1.0)
-    color.addData4f(0.0, 1.0, 0.0, 1.0)
-    color.addData4f(0.0, 0.0, 1.0, 1.0)
-    color.addData4f(1.0, 0.0, 1.0, 1.0)
+        vertex.addData3(x2, y2, z2)
+        vertex.addData3(x1, y1, z2)
+
+    def add_diff_colors():
+        color.addData4f(1.0, 0.0, 0.0, 1.0)
+        color.addData4f(0.0, 1.0, 0.0, 1.0)
+        color.addData4f(0.0, 0.0, 1.0, 1.0)
+        color.addData4f(1.0, 0.0, 1.0, 1.0)
+
+    add_diff_colors()
 
     texcoord.addData2f(0.0, 1.0)
     texcoord.addData2f(0.0, 0.0)
@@ -104,29 +112,31 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
 
 # Note: it isn't particularly efficient to make every face as a separate Geom.
 # instead, it would be better to create one Geom holding all of the faces.
-square0 = makeSquare(-1, -1, -1, 1, -1, 1)
-square1 = makeSquare(-1, 1, -1, 1, 1, 1)
-square2 = makeSquare(-1, 1, 1, 1, -1, 1)
-square3 = makeSquare(-1, 1, -1, 1, -1, -1)
-square4 = makeSquare(-1, -1, -1, -1, 1, 1)
-square5 = makeSquare(1, -1, -1, 1, 1, 1)
-snode = GeomNode('square')
-snode.addGeom(square0)
-snode.addGeom(square1)
-snode.addGeom(square2)
-snode.addGeom(square3)
-snode.addGeom(square4)
-snode.addGeom(square5)
+def make_cube():
+    square0 = makeSquare(-1, -1, -1, 1, -1, 1)
+    square1 = makeSquare(-1, 1, -1, 1, 1, 1)
+    square2 = makeSquare(-1, 1, 1, 1, -1, 1)
+    square3 = makeSquare(-1, 1, -1, 1, -1, -1)
+    square4 = makeSquare(-1, -1, -1, -1, 1, 1)
+    square5 = makeSquare(1, -1, -1, 1, 1, 1)
+    cube_node = GeomNode('square')
+    cube_node.addGeom(square0)
+    cube_node.addGeom(square1)
+    cube_node.addGeom(square2)
+    cube_node.addGeom(square3)
+    cube_node.addGeom(square4)
+    cube_node.addGeom(square5)
+    return cube_node
 
-cube = render.attachNewNode(snode)
-cube.hprInterval(1.5, (360, 360, 360)).loop()
+cube_node = make_cube()
+cube = render.attachNewNode(cube_node)
 
 # OpenGl by default only draws "front faces" (polygons whose vertices are
 # specified CCW).
 cube.setTwoSided(True)
 
 
-class MyTapper(DirectObject):
+class ButtonCommandCenter(DirectObject):
 
     def __init__(self):
         self.testTexture = loader.loadTexture("maps/envir-reeds.png")
@@ -172,5 +182,5 @@ class MyTapper(DirectObject):
         else:
             render.setLightOff(self.slnp1)
 
-t = MyTapper()
+t = ButtonCommandCenter()
 base.run()
