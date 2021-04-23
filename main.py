@@ -28,7 +28,7 @@ from voxel import Voxel
 
 base = ShowBase()
 base.disableMouse()
-base.camera.setPos(0, -10, 0)
+base.camera.setPos(0, -100, 0)
 
 
 title = OnscreenText(text="Chrysalis OS",
@@ -69,6 +69,7 @@ for _, cube in enumerate(cubes):
 class ButtonCommandCenter(DirectObject):
 
     def __init__(self):
+        self.pos = -100
         self.testTexture = loader.loadTexture("maps/envir-reeds.png")
         self.accept("1", self.toggleTex)
         self.accept("2", self.toggleLightsSide)
@@ -84,23 +85,13 @@ class ButtonCommandCenter(DirectObject):
         self.slnp1 = render.attachNewNode(slight)
 
     def toggleTex(self):
-        global cube
-        if cube.hasTexture():
-            cube.setTextureOff(1)
-        else:
-            cube.setTexture(self.testTexture)
-
+        self.pos = self.pos + 10
+        base.camera.setPos(0, self.pos, 0)
+        
     def toggleLightsSide(self):
-        global cube
-        self.LightsOn = not self.LightsOn
-
-        if self.LightsOn:
-            render.setLight(self.slnp)
-            self.slnp.setPos(cube, 10, -400, 0)
-            self.slnp.lookAt(10, 0, 0)
-        else:
-            render.setLightOff(self.slnp)
-
+        self.pos = self.pos - 10
+        base.camera.setPos(0, self.pos, 0)
+        
     def toggleLightsUp(self):
         global cube
         self.LightsOn1 = not self.LightsOn1
@@ -114,3 +105,4 @@ class ButtonCommandCenter(DirectObject):
 
 t = ButtonCommandCenter()
 base.run()
+
