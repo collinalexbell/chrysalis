@@ -66,7 +66,7 @@ for _, cube in enumerate(cubes):
 
 
 
-class ButtonCommandCenter(DirectObject):
+class Cyborg(DirectObject):
 
     def __init__(self):
         self.y = -100
@@ -79,6 +79,7 @@ class ButtonCommandCenter(DirectObject):
         self.accept("d", self.strafe_right)
         self.accept("q", self.left)
         self.accept("e", self.right)
+        self.accept("v", self.shit_a_brick)
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -98,6 +99,7 @@ class ButtonCommandCenter(DirectObject):
         base.camera.setHpr(self.camera_rotation, 0, 0)
 
     def up(self):
+        print("up")
         self.y = self.y + 10
         base.camera.setPos(self.x, self.y, self.z)
         
@@ -113,6 +115,16 @@ class ButtonCommandCenter(DirectObject):
         self.x = self.x + 10
         base.camera.setPos(self.x, self.y, self.z)
 
-t = ButtonCommandCenter()
+    def shit_a_brick(self):
+        print("shit a brick")
+        brick = Voxel(self.x, self.y, self.z)
+        brick = render.attachNewNode(brick.get_panda_render_node())
+        # OpenGl by default only draws "front faces" (polygons whose vertices are specified CCW).
+        # I may want to get rid of this if not needed
+        brick.setTwoSided(True)
+
+
+
+cyborg = Cyborg()
 base.run()
 
