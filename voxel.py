@@ -24,34 +24,12 @@ from panda3d.core import LVector3
 import sys
 import os
 
-
-base = ShowBase()
-base.disableMouse()
-base.camera.setPos(0, -10, 0)
-
-
-title = OnscreenText(text="Chrysalis OS",
-                     style=1, fg=(1, 1, 1, 1), pos=(-0.1, 0.1), scale=.07,
-                     parent=base.a2dBottomRight, align=TextNode.ARight)
-escapeEvent = OnscreenText(text="1): Load REaLSpaCE tm",
-                           style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.08),
-                           align=TextNode.ALeft, scale=.05,
-                           parent=base.a2dTopLeft)
-spaceEvent = OnscreenText(text="2): Load ChrysalisSpace",
-                          style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.14),
-                          align=TextNode.ALeft, scale=.05,
-                          parent=base.a2dTopLeft)
-upDownEvent = OnscreenText(text="3): LoadToggleSpace",
-                           style=1, fg=(1, 1, 1, 1), pos=(0.06, -0.20),
-                           align=TextNode.ALeft, scale=.05,
-                           parent=base.a2dTopLeft)
-
-
-
 # helper function to make a square given the Lower-Left-Hand and
 # Upper-Right-Hand corners
 
-def makeSquare(x1, y1, z1, x2, y2, z2):
+def makeSquare(x1, y1, z1, x2, y2, z2, offset_point):
+    # offset_point: tuple, gets transformed to Vector and then used to
+    # translate the square
     format = GeomVertexFormat.getV3n3cpt2()
     vdata = GeomVertexData('square', format, Geom.UHDynamic)
 
@@ -59,6 +37,21 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
     normal = GeomVertexWriter(vdata, 'normal')
     color = GeomVertexWriter(vdata, 'color')
     texcoord = GeomVertexWriter(vdata, 'texcoord')
+
+    nx1 = x1
+    ny1 = y1
+    nz1 = z1
+    nx2 = x2
+    ny2 = y2
+    nz2 = z2
+
+
+    x1 = x1 + offset_point[0]
+    y1 = y1 + offset_point[1] 
+    z1 = z1 + offset_point[2]
+    x2 = x2 + offset_point[0]
+    y2 = y2 + offset_point[1]
+    z2 = z2 + offset_point[2]
 
     # make sure we draw the sqaure in the right plane
     if x1 != x2:
@@ -112,13 +105,13 @@ def makeSquare(x1, y1, z1, x2, y2, z2):
 
 # Note: it isn't particularly efficient to make every face as a separate Geom.
 # instead, it would be better to create one Geom holding all of the faces.
-def make_cube():
-    square0 = makeSquare(-1, -1, -1, 1, -1, 1)
-    square1 = makeSquare(-1, 1, -1, 1, 1, 1)
-    square2 = makeSquare(-1, 1, 1, 1, -1, 1)
-    square3 = makeSquare(-1, 1, -1, 1, -1, -1)
-    square4 = makeSquare(-1, -1, -1, -1, 1, 1)
-    square5 = makeSquare(1, -1, -1, 1, 1, 1)
+def make_cube(i):
+    square0 = makeSquare(-1, -1, -1, 1, -1, 1, (i,i,i))
+    square1 = makeSquare(-1, 1, -1, 1, 1, 1,  (i,i,i))
+    square2 = makeSquare(-1, 1, 1, 1, -1, 1,  (i,i,i))
+    square3 = makeSquare(-1, 1, -1, 1, -1, -1,  (i,i,i))
+    square4 = makeSquare(-1, -1, -1, -1, 1, 1,  (i,i,i))
+    square5 = makeSquare(1, -1, -1, 1, 1, 1,  (i,i,i))
     cube_node = GeomNode('square')
     cube_node.addGeom(square0)
     cube_node.addGeom(square1)
@@ -128,59 +121,3 @@ def make_cube():
     cube_node.addGeom(square5)
     return cube_node
 
-cube_node = make_cube()
-cube = render.attachNewNode(cube_node)
-
-# OpenGl by default only draws "front faces" (polygons whose vertices are
-# specified CCW).
-cube.setTwoSided(True)
-
-
-class ButtonCommandCenter(DirectObject):
-
-    def __init__(self):
-        self.testTexture = loader.loadTexture("maps/envir-reeds.png")
-        self.accept("1", self.toggleTex)
-        self.accept("2", self.toggleLightsSide)
-        self.accept("3", self.toggleLightsUp)
-
-        self.LightsOn = False
-        self.LightsOn1 = False
-        slight = Spotlight('slight')
-        slight.setColor((1, 1, 1, 1))
-        lens = PerspectiveLens()
-        slight.setLens(lens)
-        self.slnp = render.attachNewNode(slight)
-        self.slnp1 = render.attachNewNode(slight)
-
-    def toggleTex(self):
-        global cube
-        if cube.hasTexture():
-            cube.setTextureOff(1)
-        else:
-            cube.setTexture(self.testTexture)
-
-    def toggleLightsSide(self):
-        global cube
-        self.LightsOn = not self.LightsOn
-
-        if self.LightsOn:
-            render.setLight(self.slnp)
-            self.slnp.setPos(cube, 10, -400, 0)
-            self.slnp.lookAt(10, 0, 0)
-        else:
-            render.setLightOff(self.slnp)
-
-    def toggleLightsUp(self):
-        global cube
-        self.LightsOn1 = not self.LightsOn1
-
-        if self.LightsOn1:
-            render.setLight(self.slnp1)
-            self.slnp1.setPos(cube, 10, 0, 400)
-            self.slnp1.lookAt(10, 0, 0)
-        else:
-            render.setLightOff(self.slnp1)
-
-t = ButtonCommandCenter()
-base.run()
