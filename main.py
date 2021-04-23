@@ -69,11 +69,13 @@ for _, cube in enumerate(cubes):
 class ButtonCommandCenter(DirectObject):
 
     def __init__(self):
-        self.pos = -100
-        self.testTexture = loader.loadTexture("maps/envir-reeds.png")
-        self.accept("1", self.toggleTex)
-        self.accept("2", self.toggleLightsSide)
-        self.accept("3", self.toggleLightsUp)
+        self.y = -100
+        self.x = 0
+        self.z = 0
+        self.accept("w", self.up)
+        self.accept("s", self.down)
+        self.accept("a", self.strafe_left)
+        self.accept("d", self.strafe_right)
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -84,24 +86,21 @@ class ButtonCommandCenter(DirectObject):
         self.slnp = render.attachNewNode(slight)
         self.slnp1 = render.attachNewNode(slight)
 
-    def toggleTex(self):
-        self.pos = self.pos + 10
-        base.camera.setPos(0, self.pos, 0)
+    def up(self):
+        self.y = self.y + 10
+        base.camera.setPos(self.x, self.y, self.z)
         
-    def toggleLightsSide(self):
-        self.pos = self.pos - 10
-        base.camera.setPos(0, self.pos, 0)
+    def down(self):
+        self.y = self.y - 10
+        base.camera.setPos(self.x, self.y, self.z)
         
-    def toggleLightsUp(self):
-        global cube
-        self.LightsOn1 = not self.LightsOn1
+    def strafe_left(self):
+        self.x = self.x - 10
+        base.camera.setPos(self.x, self.y, self.z)
 
-        if self.LightsOn1:
-            render.setLight(self.slnp1)
-            self.slnp1.setPos(cube, 10, 0, 400)
-            self.slnp1.lookAt(10, 0, 0)
-        else:
-            render.setLightOff(self.slnp1)
+    def strafe_right(self):
+        self.x = self.x + 10
+        base.camera.setPos(self.x, self.y, self.z)
 
 t = ButtonCommandCenter()
 base.run()
