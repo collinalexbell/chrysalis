@@ -24,7 +24,7 @@ from panda3d.core import LVector3
 import sys
 import os
 import voxel
-
+from voxel import Voxel
 
 base = ShowBase()
 base.disableMouse()
@@ -49,11 +49,11 @@ upDownEvent = OnscreenText(text="3): LoadToggleSpace",
 
 
 
-cube_nodes = [voxel.make_cube(3,3,3), 
-              voxel.make_cube(0,0,0),
-              voxel.make_cube(-3, -3, -3)]
-for _, cube in enumerate(cube_nodes):
-    cube = render.attachNewNode(cube)
+cubes = [Voxel(3,3,3), 
+         Voxel(0,0,0),
+         Voxel(-3, -3, -3)]
+for _, cube in enumerate(cubes):
+    cube = render.attachNewNode(cube.get_panda_render_node())
     # OpenGl by default only draws "front faces" (polygons whose vertices are specified CCW).
     # I may want to get rid of this if not needed
     cube.setTwoSided(True)
