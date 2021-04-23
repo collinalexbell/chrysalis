@@ -79,7 +79,7 @@ class Cyborg(DirectObject):
         self.accept("d", self.strafe_right)
         self.accept("q", self.left)
         self.accept("e", self.right)
-        self.accept("v", self.shit_a_brick)
+        self.accept("v", self.chrysalate)
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -99,7 +99,6 @@ class Cyborg(DirectObject):
         base.camera.setHpr(self.camera_rotation, 0, 0)
 
     def up(self):
-        print("up")
         self.y = self.y + 10
         base.camera.setPos(self.x, self.y, self.z)
         
@@ -115,8 +114,7 @@ class Cyborg(DirectObject):
         self.x = self.x + 10
         base.camera.setPos(self.x, self.y, self.z)
 
-    def shit_a_brick(self):
-        print("shit a brick")
+    def chrysalate(self):
         brick = Voxel(self.x, self.y, self.z)
         brick = render.attachNewNode(brick.get_panda_render_node())
         # OpenGl by default only draws "front faces" (polygons whose vertices are specified CCW).
