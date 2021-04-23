@@ -72,10 +72,13 @@ class ButtonCommandCenter(DirectObject):
         self.y = -100
         self.x = 0
         self.z = 0
+        self.camera_rotation = 0
         self.accept("w", self.up)
         self.accept("s", self.down)
         self.accept("a", self.strafe_left)
         self.accept("d", self.strafe_right)
+        self.accept("q", self.left)
+        self.accept("e", self.right)
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -85,6 +88,14 @@ class ButtonCommandCenter(DirectObject):
         slight.setLens(lens)
         self.slnp = render.attachNewNode(slight)
         self.slnp1 = render.attachNewNode(slight)
+
+    def left(self):
+        self.camera_rotation = self.camera_rotation + 10
+        base.camera.setHpr(self.camera_rotation, 0, 0)
+
+    def right(self):
+        self.camera_rotation = self.camera_rotation - 10
+        base.camera.setHpr(self.camera_rotation, 0, 0)
 
     def up(self):
         self.y = self.y + 10
