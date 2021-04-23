@@ -49,7 +49,9 @@ upDownEvent = OnscreenText(text="3): LoadToggleSpace",
 
 
 
-cube_nodes = [voxel.make_cube(3), voxel.make_cube(0), voxel.make_cube(-3)]
+cube_nodes = [voxel.make_cube(3,3,3), 
+              voxel.make_cube(0,0,0),
+              voxel.make_cube(-3, -3, -3)]
 for _, cube in enumerate(cube_nodes):
     cube = render.attachNewNode(cube)
     # OpenGl by default only draws "front faces" (polygons whose vertices are specified CCW).

@@ -105,13 +105,13 @@ def makeSquare(x1, y1, z1, x2, y2, z2, offset_point):
 
 # Note: it isn't particularly efficient to make every face as a separate Geom.
 # instead, it would be better to create one Geom holding all of the faces.
-def make_cube(i):
-    square0 = makeSquare(-1, -1, -1, 1, -1, 1, (i,i,i))
-    square1 = makeSquare(-1, 1, -1, 1, 1, 1,  (i,i,i))
-    square2 = makeSquare(-1, 1, 1, 1, -1, 1,  (i,i,i))
-    square3 = makeSquare(-1, 1, -1, 1, -1, -1,  (i,i,i))
-    square4 = makeSquare(-1, -1, -1, -1, 1, 1,  (i,i,i))
-    square5 = makeSquare(1, -1, -1, 1, 1, 1,  (i,i,i))
+def make_cube(x, y, z):
+    square0 = makeSquare(-1, -1, -1, 1, -1, 1, (x,y,z))
+    square1 = makeSquare(-1, 1, -1, 1, 1, 1,  (x,y,z))
+    square2 = makeSquare(-1, 1, 1, 1, -1, 1,  (x,y,z))
+    square3 = makeSquare(-1, 1, -1, 1, -1, -1,  (x,y,z))
+    square4 = makeSquare(-1, -1, -1, -1, 1, 1,  (x,y,z))
+    square5 = makeSquare(1, -1, -1, 1, 1, 1,  (x,y,z))
     cube_node = GeomNode('square')
     cube_node.addGeom(square0)
     cube_node.addGeom(square1)
