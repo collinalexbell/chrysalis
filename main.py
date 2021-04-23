@@ -51,7 +51,13 @@ upDownEvent = OnscreenText(text="3): LoadToggleSpace",
 
 cubes = [Voxel(3,3,3), 
          Voxel(0,0,0),
-         Voxel(-3, -3, -3)]
+         Voxel(-3, -3, -3),
+         Voxel(3,-3,-3),
+         Voxel(3,3,-3),
+         Voxel(-3,3,-3),
+         Voxel(3,-3,3),
+         Voxel(-3,-3,3),
+        ]
 for _, cube in enumerate(cubes):
     cube = render.attachNewNode(cube.get_panda_render_node())
     # OpenGl by default only draws "front faces" (polygons whose vertices are specified CCW).
