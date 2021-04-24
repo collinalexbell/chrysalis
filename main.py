@@ -25,6 +25,7 @@ import sys
 import os
 import voxel
 from voxel import Voxel
+import time
 
 base = ShowBase()
 base.disableMouse()
@@ -64,7 +65,13 @@ for _, cube in enumerate(cubes):
     # I may want to get rid of this if not needed
     cube.setTwoSided(True)
 
+class Memory:
+    def __init__(self, memory_description):
+        self.memory_description = memory_description
+        self.when = time.time()
 
+    def __repr__(self):
+        return f"{self.memory_description} at {self.when}"
 
 class Cyborg(DirectObject):
 
@@ -72,6 +79,7 @@ class Cyborg(DirectObject):
         self.y = -100
         self.x = 0
         self.z = 0
+        self.is_memoizing = False
         self.camera_rotation = 0
         self.accept("w", self.up)
         self.accept("s", self.down)
@@ -80,6 +88,10 @@ class Cyborg(DirectObject):
         self.accept("q", self.left)
         self.accept("e", self.right)
         self.accept("v", self.chrysalate)
+        self.accept("m", self.start_memoizations)
+        self.accept("n", self.stop_memoizations)
+        self.accept("p", self.play_memoization)
+        self.memory = []
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -90,29 +102,50 @@ class Cyborg(DirectObject):
         self.slnp = render.attachNewNode(slight)
         self.slnp1 = render.attachNewNode(slight)
 
+    def memoize_movement(self, movement):
+        if(self.is_memoizing):
+            self.memory.append(Memory(movement))
+            print(self.memory)
+
+    def start_memoizations(self):
+        self.is_memoizing = True 
+        self.memory = []
+
+    def stop_memoizations(self):
+        self.is_memoizing = False
+
+    def play_memoization(self):
+        print(self.memory)
+
     def left(self):
         self.camera_rotation = self.camera_rotation + 10
         base.camera.setHpr(self.camera_rotation, 0, 0)
+        self.memoize_movement("left")
 
     def right(self):
         self.camera_rotation = self.camera_rotation - 10
         base.camera.setHpr(self.camera_rotation, 0, 0)
+        self.memoize_movement("right")
 
     def up(self):
         self.y = self.y + 10
         base.camera.setPos(self.x, self.y, self.z)
+        self.memoize_movement("up")
         
     def down(self):
         self.y = self.y - 10
         base.camera.setPos(self.x, self.y, self.z)
+        self.memoize_movement("down")
         
     def strafe_left(self):
         self.x = self.x - 10
         base.camera.setPos(self.x, self.y, self.z)
+        self.memoize_movement("strafe_left")
 
     def strafe_right(self):
         self.x = self.x + 10
         base.camera.setPos(self.x, self.y, self.z)
+        self.memoize_movement("strafe_right")
 
     def chrysalate(self):
         brick = Voxel(self.x, self.y, self.z)
