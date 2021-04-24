@@ -67,11 +67,11 @@ for _, cube in enumerate(cubes):
 
 class Memory:
     def __init__(self, memory_description):
-        self.memory_description = memory_description
+        self.description = memory_description
         self.when = time.time()
 
     def __repr__(self):
-        return f"{self.memory_description} at {self.when}"
+        return f"{self.description} at {self.when}"
 
 class Cyborg(DirectObject):
 
@@ -115,7 +115,34 @@ class Cyborg(DirectObject):
         self.is_memoizing = False
 
     def play_memoization(self):
-        print(self.memory)
+        for index, cur_memory in enumerate(self.memory):
+            if index < (len(self.memory) - 1):
+                next_memory = self.memory[index+1]
+            else:
+                last_memory = None
+            if(cur_memory.description == "left"):
+                print("left")
+                self.left()
+            elif (cur_memory.description == "right"):
+                print("right")
+                self.right()
+            elif (cur_memory.description == "strafe_left"):
+                print("strafe_left")
+                self.strafe_left()
+            elif (cur_memory.description == "strafe_right"):
+                print("strafe_right")
+                self.strafe_right()
+            elif (cur_memory.description == "up"):
+                print("up")
+                self.up()
+            elif (cur_memory.description == "down"):
+                print("down")
+                self.down()
+            
+            if next_memory is not None and (next_memory.when - cur_memory.when) > 0:
+                sleep_time = next_memory.when - cur_memory.when
+                print(sleep_time)
+                time.sleep(sleep_time)
 
     def left(self):
         self.camera_rotation = self.camera_rotation + 10
