@@ -26,6 +26,8 @@ import os
 import voxel
 from voxel import Voxel
 import time
+import direct.task
+
 
 class Memory:
     def __init__(self, memory_description):
@@ -54,6 +56,7 @@ class Cyborg(DirectObject):
         self.accept("n", self.stop_memoizations)
         self.accept("p", self.play_memoization)
         self.memory = []
+        print(taskMgr)
 
         self.LightsOn = False
         self.LightsOn1 = False
@@ -76,35 +79,36 @@ class Cyborg(DirectObject):
     def stop_memoizations(self):
         self.is_memoizing = False
 
+    def get_fn_from_description(self, des):
+        if(des == "left"):
+            print("left")
+            return self.left
+        elif (des == "right"):
+            print("right")
+            return self.right
+        elif (des == "strafe_left"):
+            print("strafe_left")
+            return self.strafe_left
+        elif (des == "strafe_right"):
+            print("strafe_right")
+            return self.strafe_right
+        elif (des == "up"):
+            print("up")
+            return self.up
+        elif (des == "down"):
+            print("down")
+            return self.down
+
+
     def play_memoization(self):
-        for index, cur_memory in enumerate(self.memory):
-            if index < (len(self.memory) - 1):
-                next_memory = self.memory[index+1]
-            else:
-                last_memory = None
-            if(cur_memory.description == "left"):
-                print("left")
-                self.left()
-            elif (cur_memory.description == "right"):
-                print("right")
-                self.right()
-            elif (cur_memory.description == "strafe_left"):
-                print("strafe_left")
-                self.strafe_left()
-            elif (cur_memory.description == "strafe_right"):
-                print("strafe_right")
-                self.strafe_right()
-            elif (cur_memory.description == "up"):
-                print("up")
-                self.up()
-            elif (cur_memory.description == "down"):
-                print("down")
-                self.down()
-            
-            if next_memory is not None and (next_memory.when - cur_memory.when) > 0:
-                sleep_time = next_memory.when - cur_memory.when
-                print(sleep_time)
-                time.sleep(sleep_time)
+        cur_time = time.time()
+        first_memory = self.memory[0]
+
+        for index, cur_memory in enumerate(self.memory[1:]):
+            fn = self.get_fn_from_description(cur_memory.description)
+            sleep_time = cur_memory.when - first_memory.when
+            print(sleep_time)
+            taskMgr.doMethodLater(sleep_time, fn, str(cur_memory), extraArgs=[])
 
     def left(self):
         self.camera_rotation = self.camera_rotation + 10
